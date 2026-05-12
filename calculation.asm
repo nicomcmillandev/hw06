@@ -41,6 +41,7 @@ no_remove:
     addi $s4, $s4, 1
     j loop
 loop_end:
+    move $v0, $s0
     lw $s4, 0($sp)
     lw $s3, 4($sp)
     lw $s2, 8($sp)
@@ -48,7 +49,6 @@ loop_end:
     lw $s0, 16($sp)
     lw $ra, 20($sp)
     addi $sp, $sp, 24
-    move $v0, $s0
     jr $ra
     
 main:  # DO NOT MODIFY THE MAIN SECTION
