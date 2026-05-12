@@ -12,36 +12,54 @@ remove:
     jr $ra
 
 calc:
-    # CODE MISSING: Student to complete this part
-    addi $sp, $sp, -12
-    sw $a0, 0($sp) # save $a0 on the stack
-    sw $a1, 4($sp)  # save $a1 on the stack
-    sw $ra, 8($sp)  # save $ra on stack
-    li $t0, 5 # $t0 = z = 5
-    move $t1, $a0 # $t1 = x = 4
-    move $t2, $a1 # $t2 = y = 10
-    move $t3, $a2 # $t3 = n = 3
-    li $t4, 0 # $t4 = i = 0
+    # Prologue: Allocate stack and save $s registers + $ra
+    addi $sp, $sp, -24
+    sw $s0, 0($sp)
+    sw $s1, 4($sp)
+    sw $s2, 8($sp)
+    sw $s3, 12($sp)
+    sw $s4, 16($sp)
+    sw $ra, 20($sp)
+
+    li $s0, 5       # $s0 = z = 5
+    move $s1, $a0   # $s1 = x
+    move $s2, $a1   # $s2 = y
+    move $s3, $a2   # $s3 = n
+    li $s4, 0       # $s4 = i = 0
+
 loop:
-    bge $t4, $t3, loop_end # if i >= n, end loop
-    sub $t0, $t0, $t1
-    sll $t5, $t2, 1
-    add $t0, $t0, $t5 # $t0 = z = z - x + 2*y
+    bge $s4, $s3, loop_end # if i >= n, end loop
+    
+    # z = z - x + 2*y
+    sub $s0, $s0, $s1
+    sll $t5, $s2, 1
+    add $s0, $s0, $t5 
+
     li $t6, 2
-    blt $t1, $t6, no_remove # if x < 2 then no remove
-    move $a0, $t1
-    move $a1, $t2
+    blt $s1, $t6, no_remove # if x < 2 then no remove
+    
+    move $a0, $s1
+    move $a1, $s2
     jal remove
+    
+    add $s0, $s0, $v0 
+
 no_remove:
-    addi $t1, $t1, 1 # x++
-    addi $t4, $t4, 1
+    addi $s1, $s1, 1 # x++
+    addi $s4, $s4, 1 # i++
     j loop
+
 loop_end:
-    lw $a0, 0($sp)
-    lw $a1, 4($sp)
-    lw $ra, 8($sp)
-    addi $sp, $sp, 12
-    move $v0, $t0
+    move $v0, $s0    # Move final z value to return register
+
+    lw $s0, 0($sp)
+    lw $s1, 4($sp)
+    lw $s2, 8($sp)
+    lw $s3, 12($sp)
+    lw $s4, 16($sp)
+    lw $ra, 20($sp)
+    addi $sp, $sp, 24
+    
     jr $ra
     
 main:  # DO NOT MODIFY THE MAIN SECTION
