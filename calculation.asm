@@ -12,54 +12,43 @@ remove:
     jr $ra
 
 calc:
-    # Prologue: Allocate stack and save $s registers + $ra
+    # CODE MISSING: Student to complete this part
     addi $sp, $sp, -24
-    sw $s0, 0($sp)
-    sw $s1, 4($sp)
-    sw $s2, 8($sp)
-    sw $s3, 12($sp)
-    sw $s4, 16($sp)
     sw $ra, 20($sp)
-
-    li $s0, 5       # $s0 = z = 5
-    move $s1, $a0   # $s1 = x
-    move $s2, $a1   # $s2 = y
-    move $s3, $a2   # $s3 = n
-    li $s4, 0       # $s4 = i = 0
-
+    sw $s0, 16($sp)
+    sw $s1, 12($sp)
+    sw $s2, 8($sp)
+    sw $s3, 4($sp)
+    sw $s4, 0($sp)
+    li $s0, 5 # $s0 = z = 5
+    move $s1, $a0 # $s1 = x = 4
+    move $s2, $a1 # $s2 = y = 10
+    move $s3, $a2 # $s3 = n = 3
+    li $s4, 0 # $s4 = i = 0
 loop:
     bge $s4, $s3, loop_end # if i >= n, end loop
-    
-    # z = z - x + 2*y
     sub $s0, $s0, $s1
     sll $t5, $s2, 1
-    add $s0, $s0, $t5 
-
+    add $s0, $s0, $t5 # $s0 = z = z - x + 2*y
     li $t6, 2
     blt $s1, $t6, no_remove # if x < 2 then no remove
-    
     move $a0, $s1
     move $a1, $s2
     jal remove
-    
-    add $s0, $s0, $v0 
-
+    move $s2, $v0
 no_remove:
     addi $s1, $s1, 1 # x++
-    addi $s4, $s4, 1 # i++
+    addi $s4, $s4, 1
     j loop
-
 loop_end:
-    move $v0, $s0    # Move final z value to return register
-
-    lw $s0, 0($sp)
-    lw $s1, 4($sp)
+    lw $s4, 0($sp)
+    lw $s3, 4($sp)
     lw $s2, 8($sp)
-    lw $s3, 12($sp)
-    lw $s4, 16($sp)
+    lw $s1, 12($sp)
+    lw $s0, 16($sp)
     lw $ra, 20($sp)
     addi $sp, $sp, 24
-    
+    move $v0, $s0
     jr $ra
     
 main:  # DO NOT MODIFY THE MAIN SECTION
